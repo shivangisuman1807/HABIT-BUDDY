@@ -14,6 +14,22 @@ Habit Buddy is a cute habit-tracking web app with virtual pets and a gem-based r
 - Feeding interactions
 - Theme customization
 
+## 🚀 Latest Update
+
+Habit Buddy has received a major update! 🐶✨
+
+### What's new?
+- 🐾 Improved virtual pet interactions and animations
+- 😊 Happiness and 🍖 hunger system
+- ⭕ Circular pet status indicators
+- 📅 Habits can only be edited for today and yesterday
+- 💎 Fixed gem rewards to prevent duplicate gem farming
+- 🛍️ Added a treat shop and cart system
+- 🐶 Feed your pet using purchased treats
+- 🌿 Improved garden UI and pet area
+- ☀️ Larger sun and cleaner background visuals
+- 🎉 Improved checkout confirmation flow
+
 ## Run
 
 Open `index.html` in a browser. No build step is required.
