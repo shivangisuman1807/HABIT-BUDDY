@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Habit Buddy</title>
+<style>
+:root{--bg:#f7eaf0;--card:#fffafd;--ink:#4d2850;--muted:#92748a;--line:#ead3dd;--accent:#d93d7a;--soft:#f7dce8;--shadow:#e5c5d2}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);font-family:Georgia,"Times New Roman",serif;background:linear-gradient(135deg,#f8dce8,#efe6f7 48%,#dff0ef);min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer;color:inherit}.app{min-height:100vh}
+.topbar{height:76px;background:#fff9fcdd;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:24px;position:sticky;top:0;z-index:50}.brand{font-family:"Brush Script MT","Segoe Script",cursive;font-size:34px;color:#b42372;white-space:nowrap}.brand span{font-family:Georgia;font-size:16px}.nav{display:flex;gap:10px;align-items:center;flex:1;justify-content:center}.nav button{border:1px solid #d9dbe9;background:#fff;border-radius:13px;padding:10px 19px;box-shadow:0 3px 7px #7c5b7a1c;font-size:13px;font-weight:bold}.nav button.active{background:#ffd7e6;border-color:#f49abb;color:#a52268}.gemBox{background:white;border:1px solid var(--line);border-radius:20px;padding:10px 18px;font-weight:bold;box-shadow:0 3px 8px #0000000d;white-space:nowrap}
+.main{max-width:1480px;margin:0 auto;padding:18px;display:grid;grid-template-columns:40% 60%;gap:14px}
+.left,.right{display:flex;flex-direction:column;gap:14px}.card{background:#fffdfdf0;border:1px solid #fff;border-radius:22px;box-shadow:0 8px 24px #6d466d1c;overflow:hidden}.tracker{padding:18px}.trackerHead{display:flex;align-items:center;gap:12px;margin-bottom:13px}.calendarIcon{width:48px;height:48px;border-radius:13px;background:#ffe0ea;display:grid;place-items:center;font-size:27px}.title{font-size:25px;margin:0}.sub{color:var(--muted);font-size:12px}.headControls{margin-left:auto;display:flex;gap:6px}.headControls button{border:1px solid var(--line);background:white;border-radius:10px;padding:7px 9px;font-size:11px}.headControls button.active{background:#ffdce9;border-color:#ee9db8;color:#a82268}.gridWrap{overflow:auto;border:1px solid #efdce4;border-radius:15px}.grid{display:grid;min-width:600px}.habitHead,.dayHead,.cell{border-right:1px solid #efdfe5;border-bottom:1px solid #efdfe5;min-height:45px}.habitHead{background:#fff8fb;padding:8px 9px;font-size:11px;font-weight:bold}.habitCell{display:flex;align-items:center;gap:7px;position:sticky;left:0;z-index:3;background:#fff9fc}.dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex:none}.habitName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dayHead{text-align:center;padding:7px 3px;background:#fff0f5;font-size:10px;line-height:1.2}.trackCell{display:grid;place-items:center;background:#fff}.trackBtn{width:27px;height:27px;border:1px solid #e7d5dc;background:#fff;border-radius:8px;font-size:13px}.trackBtn.done{background:var(--habitColor,#4fc48a);border-color:var(--habitColor,#4fc48a);color:#fff;font-weight:bold}.addHabit{margin-top:13px;width:100%;padding:11px;border:1.5px dashed #f08eb1;background:#fff3f7;color:#c42669;border-radius:13px;font-weight:bold}.manage{display:flex;gap:7px;margin-top:8px}.manage button{flex:1}.smallBtn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px;font-size:11px}
+.progressCard{padding:17px;display:grid;grid-template-columns:115px 1fr;gap:18px;align-items:center}.ring{width:104px;height:104px;border-radius:50%;background:conic-gradient(#3fc37b var(--p),#e6e0e5 0);display:grid;place-items:center}.ring:after{content:"";grid-area:1/1;width:82px;height:82px;border-radius:50%;background:white}.ringText{grid-area:1/1;z-index:1;text-align:center}.progressCard h3{margin:0 0 6px}.bar{height:11px;border-radius:8px;background:#eadfe5;overflow:hidden}.bar i{display:block;height:100%;background:#44c47d;border-radius:8px;width:0}.tip{font-size:11px;color:var(--muted);margin-top:7px}
+.gardenCard{position:relative;padding:0;min-height:650px;background:linear-gradient(#9dd7f2,#d6f1ef 48%,#8ecb79 48%,#70b967);overflow:hidden}.gardenBg{position:absolute;inset:0;background:radial-gradient(circle at 15% 18%,#fff9 0 6%,transparent 7%),radial-gradient(circle at 78% 20%,#fff8 0 5%,transparent 6%),linear-gradient(180deg,transparent 0 53%,#76b968 53%);}.sun{position:absolute;right:30px;top:24px;font-size:45px;opacity:.8}.cloud{position:absolute;font-size:38px;opacity:.7}.cloud1{left:35px;top:48px}.cloud2{right:150px;top:86px;font-size:28px}.hill{position:absolute;bottom:210px;width:65%;height:150px;border-radius:50% 50% 0 0;background:#82bd78}.hill1{left:-22%}.hill2{right:-22%;background:#70ae6b}.path{position:absolute;bottom:-85px;left:36%;width:180px;height:320px;background:#d7b88c;border-radius:50% 50% 0 0;transform:rotate(7deg)}.gardenDecor{position:absolute;z-index:2;font-size:25px}.fl1{left:25px;bottom:160px}.fl2{right:40px;bottom:145px}.fl3{left:90px;bottom:210px}.tree{position:absolute;right:12px;bottom:220px;font-size:150px;z-index:2;opacity:.85}.swing{position:absolute;right:110px;top:70px;font-size:95px;opacity:.8}.gardenTop{position:relative;z-index:8;display:flex;justify-content:space-between;align-items:flex-start;padding:18px}.petIdentity{background:#fffefcf0;border-radius:17px;padding:13px 17px;box-shadow:0 6px 20px #5c48632a;min-width:270px}.petIdentity .name{font-size:24px;font-weight:bold}.petIdentity .xp{font-size:10px;color:var(--muted);margin-top:4px}.happyPill{background:#fffefcf0;border-radius:14px;padding:11px 16px;font-weight:bold;box-shadow:0 6px 20px #5c48632a}.pet{position:absolute;z-index:7;left:34%;top:36%;width:190px;height:190px;display:grid;place-items:center;filter:drop-shadow(0 12px 7px #0003)}.petSvg{width:175px;height:175px}.petPlaceholder{font-size:95px}.petName{position:absolute;z-index:9;bottom:52px;width:100%;text-align:center;font-family:"Segoe Script","Brush Script MT",cursive;font-size:20px;color:#542a48}.mood{position:absolute;z-index:9;bottom:28px;width:100%;text-align:center;font-size:11px;color:#694f66;font-style:italic}.petActions{position:absolute;z-index:10;bottom:14px;left:16px;right:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.actions button,.petActions button{border:1px solid #e8d3dd;background:#fffdfdf0;border-radius:15px;padding:13px 5px;font-size:11px;box-shadow:0 5px 12px #0002}.actions button:hover{transform:translateY(-2px);background:#fff0f5}.stats{position:absolute;z-index:10;right:17px;top:102px;width:190px;background:#fffdfdf2;border-radius:17px;padding:13px;box-shadow:0 6px 20px #5c48632a}.stat{padding:7px 3px}.stat small{display:block;font-size:9px;color:var(--muted)}.stat b{font-size:11px}.mini{height:7px;background:#e7e0e5;border-radius:6px;overflow:hidden;margin-top:5px}.mini i{display:block;height:100%;width:100%;background:#f05f95}.change{position:absolute;z-index:11;left:18px;top:112px;border:1px solid var(--line);background:#fffdfd;border-radius:9px;padding:7px 9px;font-size:10px}.choosePet{position:absolute;z-index:11;left:18px;top:112px;border:1px solid #efb1c7;background:#fff4f8;color:#b22667;border-radius:10px;padding:9px 12px;font-weight:bold}
+.inventoryCard{padding:14px 17px}.inventoryCard h3{margin:0 0 8px}.items{display:flex;gap:7px;flex-wrap:wrap}.item{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;font-size:10px}
+.infoRow{display:grid;grid-template-columns:1fr 1fr;gap:14px}.miniCard{padding:16px}.miniCard h3{margin:0 0 8px}.streak{font-size:18px;font-weight:bold}.gemBig{font-size:23px;color:#7546d7;font-weight:bold}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#382a3655;backdrop-filter:blur(6px);z-index:1000;padding:20px}.modal.open{display:flex}.modalBox{width:min(670px,96vw);max-height:90vh;overflow:auto;background:#fffdfd;border:1px solid var(--line);border-radius:20px;padding:25px;box-shadow:0 25px 80px #0003;position:relative;text-align:center}.close{position:absolute;right:13px;top:9px;border:0;background:transparent;font-size:27px}.modal h2{font-family:"Brush Script MT","Segoe Script",cursive;font-size:38px;margin:0 0 5px;color:#9c3c68}.choices{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.choice{border:1px solid var(--line);background:#fff9fb;border-radius:14px;padding:12px 5px;min-height:160px}.choice:hover{background:#fce5ee;transform:translateY(-3px)}.choice span{display:block;font-size:60px}.choice b{display:block;font-size:13px;margin-top:7px}.choice small{display:block;color:var(--muted);font-size:8px;margin-top:3px}.form{display:grid;gap:9px;text-align:left}.form label{font-size:11px;color:var(--muted)}.form input{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink)}.colors{display:flex;gap:8px}.colorPick{width:29px;height:29px;border-radius:50%;border:2px solid transparent}.colorPick.selected{border-color:#5a344d;transform:scale(1.1)}.confirm{width:100%;margin-top:10px;background:#d83e79;color:white;border:0;border-radius:10px;padding:11px;font-weight:bold}.themeChoices{display:grid;grid-template-columns:1fr 1fr;gap:9px}.themeBtn{padding:14px;border:1px solid var(--line);border-radius:11px;background:#fff;text-align:left}.themeBtn strong{display:block}.themeBtn small{color:var(--muted)}
+.petSvg .tail{transform-box:fill-box;transform-origin:left center;animation:tailWag .45s ease-in-out infinite alternate}.dogSvg .tail{animation-duration:.38s}.catSvg .tail{animation-duration:1s}@keyframes tailWag{from{transform:rotate(-12deg)}to{transform:rotate(18deg)}}@keyframes bouncePet{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px) rotate(-4deg)}}.pet.happy .petSvg{animation:bouncePet .5s 4}.pet.eat .petSvg{animation:eatPet .3s infinite alternate}@keyframes eatPet{from{transform:translateY(0)}to{transform:translateY(6px)}}
+@media(max-width:1050px){.main{grid-template-columns:1fr}.gardenCard{min-height:620px}.nav{justify-content:flex-end}.stats{right:12px}.pet{left:32%}}@media(max-width:700px){.topbar{height:auto;min-height:70px;flex-wrap:wrap;padding:12px}.brand{font-size:30px}.nav{order:3;width:100%;overflow:auto;justify-content:flex-start}.nav button{padding:8px 12px}.main{padding:9px}.gardenCard{min-height:560px}.stats{width:160px;top:100px}.pet{left:27%;top:39%}.petActions{grid-template-columns:1fr 1fr}.choices{grid-template-columns:1fr 1fr}.infoRow{grid-template-columns:1fr}}
+
+.shopBox{max-width:820px;width:min(820px,94vw);max-height:88vh;overflow:auto;text-align:left}.shopTitleRow{display:flex;justify-content:space-between;align-items:center;margin-top:14px}.shopGemBalance{background:#f0e9ff;border-radius:12px;padding:8px 12px}.shopNotice{padding:14px;border:1px dashed var(--line);border-radius:12px;background:#fff8fb;text-align:center;color:var(--muted);margin-top:10px}.productGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.productCard{border:1px solid var(--line);border-radius:14px;background:#fff8fb;padding:12px;display:grid;gap:5px;text-align:center;margin-top:10px}.productEmoji{font-size:34px}.productCard small{font-size:9px;color:var(--muted)}.productCard strong{font-size:12px}.addCart{border:0;border-radius:9px;padding:9px;background:#d98bad;color:#fff;font-weight:bold}.cartQty{font-size:9px;color:var(--muted)}.cartPanel{margin-top:14px;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff5f9}.cartHeader{display:flex;justify-content:space-between}.cartRow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #eadde4;font-size:11px}.cartRow button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:2px 8px}.cartEmpty{padding:10px 0;color:var(--muted);font-size:10px}.checkoutBtn{margin-top:10px;width:100%;border:0;border-radius:10px;padding:11px;background:#d98bad;color:#fff;font-weight:bold}.checkoutBtn:disabled{opacity:.45}.treatBagTitle{font-weight:bold;font-size:12px;margin-top:12px}.bagRow{display:grid;grid-template-columns:1fr 30px 55px;gap:7px;align-items:center;padding:7px;margin-top:6px;border:1px solid var(--line);border-radius:9px;background:#fff8fb;font-size:10px}.bagRow button{border:1px solid var(--line);background:#eef8ed;border-radius:7px;padding:5px;font-size:9px}.bagRow button:disabled{opacity:.4}@media(max-width:650px){.productGrid{grid-template-columns:1fr}}
+
+.orderBox{max-width:480px;text-align:left}.orderBox h2,.orderBox .sub{text-align:center}.orderList{margin:16px 0 10px;padding:10px 12px;border-radius:12px;background:#fff8fb;border:1px solid var(--line)}.orderLine,.orderMoney{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:7px 0;font-size:11px}.orderLine+ .orderLine{border-top:1px solid #eee3e9}.orderMoney{border-top:1px solid var(--line);font-size:11px}.orderMoney.spent{color:#b33d67}.orderMoney.remaining{font-size:13px;color:#39723a;background:#f1faef;border-radius:9px;padding:10px 11px;margin-top:5px}.shopGemBalance small{font-size:8px;opacity:.7}
+
+.cartButtons{display:flex;gap:9px;margin-top:10px}.cartButtons .checkoutBtn{margin-top:0;flex:1}.resetCartBtn{border:1px solid var(--line);border-radius:10px;padding:11px 15px;background:#fff;color:#7b6570;font-weight:bold;white-space:nowrap}.resetCartBtn:hover{background:#fff3f7}
+
+.bagSummary{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;margin:7px 0;border-radius:10px;background:#fff0f6;border:1px solid var(--line);font-size:10px}.feedMainBtn{border:0;border-radius:9px;padding:8px 12px;background:#d98bad;color:#fff;font-weight:bold}.feedMainBtn:disabled{opacity:.4}.feedBox{max-width:430px}.feedChoice{width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:#fff8fb;border-radius:12px;padding:11px;margin-top:8px;cursor:pointer}.feedChoice:disabled{opacity:.4;cursor:not-allowed}.feedChoiceEmoji{font-size:30px}.feedChoice b,.feedChoice small{display:block}.feedChoice small{font-size:9px;color:var(--muted);margin-top:3px}@keyframes petHappyJump{0%{transform:translateY(0)}25%{transform:translateY(-22px) rotate(-3deg)}50%{transform:translateY(0) rotate(3deg)}70%{transform:translateY(-10px)}100%{transform:translateY(0)}}.pet.jumpHappy{animation:petHappyJump .85s ease-in-out}
+
+#checkoutTreats{position:relative;z-index:20;pointer-events:auto;cursor:pointer}
+#checkoutTreats:disabled{cursor:not-allowed}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand">🐾 Habit Buddy <span>♥</span></div>
+  <nav class="nav">
+    <button class="active" data-tab="tracker">▣ Tracker</button>
+    <button data-tab="stats">▥ Stats</button>
+    <button data-tab="pet">🐾 Pet</button>
+    <button data-tab="shop">▣ Shop</button>
+    <button data-tab="settings">⚙ Settings</button>
+  </nav>
+  <div class="gemBox">💎 <span id="gems">0</span></div>
+</header>
+
+<main class="main">
+  <div class="left">
+    <section class="card tracker" id="trackerPanel">
+      <div class="trackerHead">
+        <div class="calendarIcon">▣</div>
+        <div><h1 class="title" id="periodTitle">This Week</h1><div class="sub" id="periodSub"></div></div>
+        <div class="headControls">
+          <button id="weekBtn" class="active">Week</button>
+          <button id="monthBtn">Month</button>
+        </div>
+      </div>
+      <div id="monthControls" style="display:none;margin-bottom:9px"></div>
+      <div class="gridWrap"><div class="grid" id="habitGrid"></div></div>
+      <button class="addHabit" id="addHabit">＋ Add Habit</button>
+      <div class="manage"><button class="smallBtn" id="manageHabits">🗑 Manage habits</button><button class="smallBtn" id="clearPaint">↺ Clear today</button></div>
+    </section>
+
+    <section class="card progressCard">
+      <div class="ring" id="ring"><div class="ringText"><b id="progressPct">0%</b><br><small>today</small></div></div>
+      <div>
+        <h3>Daily Progress ✨</h3>
+        <b id="progressText">Add your first habit</b>
+        <div class="bar" style="margin-top:9px"><i id="progressBar"></i></div>
+        <div class="tip" id="tip">Complete a habit to earn 10 💎</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="right">
+    <section class="card gardenCard" id="petPanel">
+      <div class="gardenBg"></div><div class="sun">☀️</div><div class="cloud cloud1">☁️</div><div class="cloud cloud2">☁️</div>
+      <div class="hill hill1"></div><div class="hill hill2"></div><div class="path"></div>
+      <div class="gardenDecor fl1">🌷</div><div class="gardenDecor fl2">🌼</div><div class="gardenDecor fl3">🌸</div><div class="tree">🌳</div><div class="swing">🪢</div>
+
+      <div class="gardenTop">
+        <div class="petIdentity"><div class="sub">🐾 YOUR LITTLE BUDDY</div><div class="name" id="petHeaderName">Meet your pet</div><div class="xp">Level 1 · building happy habits together</div></div>
+        <div class="happyPill">😊 <span id="petMoodTop">Very Happy!</span> · 💎 <span id="petGems">0</span></div>
+      </div>
+
+      <div class="pet" id="petDisplay"><span class="petPlaceholder">🐾</span></div>
+      <div class="petName" id="petName">Your Buddy</div>
+      <div class="mood" id="petMood">Choose your first little friend</div>
+
+      <button class="choosePet" id="choosePet">🐾 Choose your pet</button>
+      <button class="change" id="changePet" style="display:none">✎ Change pet</button>
+
+      <div class="stats" id="petStats" style="display:none">
+        <div class="stat">❤️ <small>Happiness</small><b id="happy">100</b><div class="mini"><i id="happyBar"></i></div></div>
+        <div class="stat">🍖 <small>Hunger</small><b id="hunger">100</b><div class="mini"><i id="hungerBar"></i></div></div>
+        <div class="stat">⚡ <small>Energy</small><b id="energy">100</b><div class="mini"><i id="energyBar"></i></div></div>
+        <div class="stat">💧 <small>Cleanliness</small><b id="clean">100</b><div class="mini"><i id="cleanBar"></i></div></div>
+      </div>
+
+      <div class="petActions" id="petActions" style="display:none">
+        <button data-act="pet">🫳<br>Pet</button><button data-act="feed">🍖<br>Feed</button><button data-act="play">🎾<br>Play</button><button data-act="walk">🦮<br>Walk</button>
+      </div>
+    </section>
+
+    <section class="card inventoryCard">
+      <h3>🎒 Inventory</h3>
+      <div class="items"><span class="item">🍖 Basic food × 3</span><span class="item">🎾 Ball × 1</span><span class="item">🎀 Bow × 1</span></div>
+    <div class="treatBagTitle">🍖 Treat Bag</div><div id="treatBag"><div class="sub">Choose a pet to see treats.</div></div></section>
+
+    <div class="infoRow">
+      <section class="card miniCard"><h3>🔥 Streak</h3><div class="streak">Keep going!</div><div class="sub">3 consecutive days = +50 💎</div></section>
+      <section class="card miniCard"><h3>💎 Today's Gems</h3><div class="gemBig">+10</div><div class="sub">per completed habit</div></section>
+    </div>
+  </div>
+</main>
+</div>
+
+<div class="modal" id="petModal"><div class="modalBox"><button class="close" data-close="petModal">×</button><h2>Choose your buddy</h2><div class="sub">Pick one little friend to raise with your habits.</div>
+<div style="margin:14px auto 4px;max-width:360px;text-align:left"><label style="font-size:11px;color:var(--muted)">Pet name<input id="petNameInput" maxlength="18" placeholder="Give your buddy a name" style="width:100%;margin-top:5px;padding:9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)"></label></div>
+<div class="choices"><button class="choice" data-pet="dog"><span>🐶</span><b>Dog</b><small>Loyal & playful</small></button><button class="choice" data-pet="cat"><span>🐱</span><b>Cat</b><small>Curious & cozy</small></button><button class="choice" data-pet="bunny"><span>🐰</span><b>Bunny</b><small>Gentle & sweet</small></button><button class="choice" data-pet="hamster"><span>🐹</span><b>Hamster</b><small>Tiny & energetic</small></button></div></div></div>
+
+<div class="modal" id="habitModal"><div class="modalBox"><button class="close" data-close="habitModal">×</button><h2>Add a habit</h2><div class="form"><label>Habit name<input id="habitNameInput" placeholder="e.g. Drink water"></label><label>Habit color<div class="colors" id="habitColors"></div></label><button class="confirm" id="saveHabit">Add habit</button></div></div></div>
+
+<div class="modal" id="manageModal"><div class="modalBox"><button class="close" data-close="manageModal">×</button><h2>Manage habits</h2><div id="manageList"></div></div></div>
+
+<div class="modal" id="deleteModal"><div class="modalBox"><button class="close" data-close="deleteModal">×</button><div style="font-size:38px">🗑️</div><h2 style="font-family:Georgia,serif;font-size:25px">Delete this habit?</h2><p class="sub">Are you sure you want to remove <b id="deleteHabitName"></b>?<br>This will also remove its saved checkmarks.</p><div style="display:flex;gap:8px;margin-top:16px"><button class="smallBtn" id="cancelDelete" style="flex:1;padding:11px">No, keep it</button><button class="confirm" id="confirmDelete" style="flex:1;margin-top:0;background:#c96f83">Yes, delete</button></div></div></div>
+
+<div class="modal" id="shopModal"><div class="modalBox shopBox"><button class="close" data-close="shopModal">×</button><h2>Buddy Shop 🛍️</h2><div class="sub">Choose treats → add to cart → checkout → feed.</div><div class="shopTitleRow"><h3>🍖 Food · Treats</h3><span class="shopGemBalance">💎 <b id="shopGems">0</b> <small>available after cart</small></span></div><div id="shopProducts"></div><div class="cartPanel"><div class="cartHeader"><b>🛒 Your Cart</b><span><span id="cartCount">0</span> items · 💎 <span id="cartTotal">0</span></span></div><div id="cartRows"></div><button type="button" id="checkoutTreats" class="checkoutBtn" onclick="window.habitBuddyCheckout()">Checkout & Confirm Order</button></div></div></div><div class="modal" id="orderConfirm">
+<div class="modalBox orderBox">
+<div class="orderIcon">🎉</div>
+<h2>Order Confirmed!</h2>
+<div class="sub">Your treats have been added to your Treat Bag. 🐾</div>
+<div id="orderSummary"></div>
+<button class="confirm" data-close="orderConfirm">Yay! 💗</button>
+</div></div><div class="modal" id="feedModal"><div class="modalBox feedBox"><button class="close" data-close="feedModal">×</button><h2>Feed your buddy 🍖</h2><div class="sub">What would you like to give <span id="feedPetName">your pet</span>?</div><div id="feedChoices"></div></div></div>
+<div class="modal" id="settingsModal"><div class="modalBox"><button class="close" data-close="settingsModal">×</button><h2>Choose your theme</h2><div class="themeChoices"><button class="themeBtn" data-theme="pink">🌸 <strong>Soft Pink</strong><small>Blush & rosy</small></button><button class="themeBtn" data-theme="lavender">💜 <strong>Lavender</strong><small>Dreamy lilac</small></button><button class="themeBtn" data-theme="blue">🩵 <strong>Powder Blue</strong><small>Soft sky</small></button><button class="themeBtn" data-theme="vintage">📰 <strong>Vintage</strong><small>Warm parchment</small></button></div></div></div>
+
+<div class="modal" id="infoModal"><div class="modalBox"><button class="close" data-close="infoModal">×</button><h2 id="infoTitle"></h2><p id="infoText" class="sub"></p></div></div>
+
+<script>
+(function(){
+"use strict";
+var KEY="habitBuddyFinalV2";
+var TREAT_CATALOG={
+ dog:[{id:"dog_treat",name:"Puppy Treats",emoji:"🦴",price:50,hunger:20},
+      {id:"dog_biscuit",name:"Premium Puppy Treat",emoji:"🍪",price:100,hunger:40}],
+ cat:[{id:"cat_treat",name:"Fish Treats",emoji:"🐟",price:50,hunger:20},
+      {id:"cat_snack",name:"Tuna Treats",emoji:"🍣",price:100,hunger:40}],
+ bunny:[{id:"bunny_treat",name:"Carrot Treats",emoji:"🥕",price:50,hunger:20},
+        {id:"bunny_snack",name:"Apple Treats",emoji:"🍎",price:100,hunger:40}],
+ hamster:[{id:"hamster_treat",name:"Seed Treats",emoji:"🌻",price:50,hunger:20},
+          {id:"hamster_snack",name:"Nut Treats",emoji:"🥜",price:100,hunger:40}]
+};
+function ensureShop(){if(!state.treats)state.treats={};if(!state.cart)state.cart={};}
+function petTreats(){return state.pet?(TREAT_CATALOG[state.pet.type]||[]):[]}
+function cartCount(){ensureShop();return petTreats().reduce((s,i)=>s+(state.cart[i.id]||0),0)}
+function cartTotal(){ensureShop();return petTreats().reduce((s,i)=>s+(state.cart[i.id]||0)*i.price,0)}
+function addTreat(id){
+ ensureShop();
+ var i=petTreats().find(x=>x.id===id);
+ if(!i)return toast("Choose a pet first 🐾");
+ var nextTotal=cartTotal()+i.price;
+ if(nextTotal>state.gems){
+   toast("You don't have enough 💎 for this treat");
+   return;
+ }
+ state.cart[id]=(state.cart[id]||0)+1;
+ save();renderShop();
+}
+function removeTreat(id){ensureShop();state.cart[id]=Math.max(0,(state.cart[id]||0)-1);save();renderShop()}
+function checkoutTreats(){
+ ensureShop();
+ var total=cartTotal(),count=cartCount();
+ if(!count)return toast("Your cart is empty 🛒");
+ if(total>state.gems){
+   toast("You don't have enough 💎 for this order");
+   return;
+ }
+
+ var orderItems=cartItems().map(function(x){
+   return {name:x.item.name,emoji:x.item.emoji,qty:x.qty,price:x.item.price};
+ });
+ var before=state.gems;
+
+ petTreats().forEach(function(i){
+   var n=state.cart[i.id]||0;
+   if(n){
+     state.treats[i.id]=(state.treats[i.id]||0)+n;
+     state.cart[i.id]=0;
+   }
+ });
+ state.gems-=total;
+ var after=state.gems;
+
+ var summary=$("orderSummary");
+ if(summary){
+   summary.innerHTML=
+     '<div class="orderList">'+
+     orderItems.map(function(x){
+       return '<div class="orderLine"><span>'+x.emoji+' '+x.name+' ×'+x.qty+'</span><b>💎 '+(x.price*x.qty)+'</b></div>';
+     }).join("")+
+     '</div>'+
+     '<div class="orderMoney"><span>Gems before</span><b>💎 '+before+'</b></div>'+
+     '<div class="orderMoney spent"><span>Gems spent</span><b>−💎 '+total+'</b></div>'+
+     '<div class="orderMoney remaining"><span>Gems remaining</span><b>💎 '+after+'</b></div>';
+ }
+ save();render();renderShop();renderTreatBag();
+ modal("shopModal",false);modal("orderConfirm",true);
+}
+function openFeedPicker(){
+ ensureShop();
+ if(!state.pet){toast("Choose a pet first 🐾");return}
+ if($("feedPetName"))$("feedPetName").textContent=state.pet.name;
+ var box=$("feedChoices");if(!box)return;
+ box.innerHTML=petTreats().map(function(i){
+   var n=state.treats[i.id]||0;
+   return '<button class="feedChoice" data-feed-choice="'+i.id+'" '+(!n?'disabled':'')+'><span class="feedChoiceEmoji">'+i.emoji+'</span><span><b>'+i.name+'</b><small>×'+n+' · hunger −'+i.hunger+'</small></span></button>';
+ }).join("");
+ modal("feedModal",true);
+ box.querySelectorAll("[data-feed-choice]").forEach(function(b){b.onclick=function(){feedTreat(b.dataset.feedChoice)}});
+}
+function feedTreat(id){
+ ensureShop();
+ var i=petTreats().find(function(x){return x.id===id});if(!i)return;
+ if((state.treats[id]||0)<1){toast("You don't have this treat yet 🛍️");return}
+ state.treats[id]--;
+ state.pet.hunger=Math.max(0,(state.pet.hunger||0)-i.hunger);
+ state.pet.happiness=Math.min(100,(state.pet.happiness||0)+15);
+ save();render();renderTreatBag();
+ modal("feedModal",false);
+ var pet=$("petDisplay");
+ if(pet){pet.classList.remove("jumpHappy");void pet.offsetWidth;pet.classList.add("jumpHappy");setTimeout(function(){pet.classList.remove("jumpHappy")},900)}
+ toast(state.pet.name+" loved the "+i.name+"! "+i.emoji+" 💗");
+}
+function renderTreatBag(){
+ ensureShop();var b=$("treatBag");if(!b)return;
+ if(!state.pet){b.innerHTML='<div class="sub">Choose a pet to see treats.</div>';return}
+ var total=petTreats().reduce(function(sum,i){return sum+(state.treats[i.id]||0)},0);
+ b.innerHTML='<div class="bagSummary"><span>🍖 Treats with you: <b>'+total+'</b></span><button class="feedMainBtn" id="feedPetBtn" '+(!total?'disabled':'')+'>🍖 Feed</button></div>'+
+ petTreats().map(function(i){var n=state.treats[i.id]||0;return '<div class="bagRow"><span>'+i.emoji+' '+i.name+'</span><b>×'+n+'</b></div>';}).join("");
+ var f=$("feedPetBtn");if(f)f.onclick=function(){openFeedPicker()};
+}
+function renderShop(){
+ ensureShop();var b=$("shopProducts");if(!b)return;
+ if(!state.pet){b.innerHTML='<div class="shopNotice">🐾 Choose your pet first to unlock their treats.</div>'}
+ else{
+  b.innerHTML=petTreats().map(function(i){return '<div class="productCard"><div class="productEmoji">'+i.emoji+'</div><b>'+i.name+'</b><small>+'+i.hunger+' hunger</small><strong>'+i.price+' 💎</strong><button class="addCart" data-add="'+i.id+'">Add to Cart</button><span class="cartQty">In cart: ×'+(state.cart[i.id]||0)+'</span></div>'}).join("");
+  b.querySelectorAll("[data-add]").forEach(function(x){x.onclick=function(){addTreat(x.dataset.add)}})
+ }
+ var rows=$("cartRows");if(rows){var items=petTreats().filter(function(i){return state.cart[i.id]});rows.innerHTML=items.length?items.map(function(i){return '<div class="cartRow"><span>'+i.emoji+' '+i.name+'</span><b>×'+state.cart[i.id]+'</b><button data-remove="'+i.id+'">−</button></div>'}).join(""):'<div class="cartEmpty">Your cart is empty 🛒</div>';rows.querySelectorAll("[data-remove]").forEach(function(x){x.onclick=function(){removeTreat(x.dataset.remove)}})}
+ if($("cartCount"))$("cartCount").textContent=cartCount();
+if($("cartTotal"))$("cartTotal").textContent=cartTotal();
+if($("shopGems"))$("shopGems").textContent=Math.max(0,state.gems-cartTotal());
+if($("checkoutTreats")){ $("checkoutTreats").disabled=(cartCount()===0); $("checkoutTreats").style.pointerEvents="auto"; }
+}
+
+var themes={
+pink:{bg:"#f9e8ee",card:"#fffafd",ink:"#754f5b",muted:"#a27b87",line:"#e7cbd3",accent:"#e8849d",soft:"#f5d7df",shadow:"#dfc0c8"},
+lavender:{bg:"#ece7f5",card:"#fcfaff",ink:"#6d5b80",muted:"#9182a1",line:"#d5c9e3",accent:"#9a80bd",soft:"#e0d5ed",shadow:"#cfc1df"},
+blue:{bg:"#e3f0f5",card:"#fbfeff",ink:"#5f7f91",muted:"#819aa7",line:"#c6dce4",accent:"#75a9bf",soft:"#d3e7ee",shadow:"#bfd5de"},
+vintage:{bg:"#eadbbf",card:"#f8ecd5",ink:"#6d523c",muted:"#8b725b",line:"#c9b18e",accent:"#9b6b4d",soft:"#dfc9a5",shadow:"#c7ad89"}
+};
+var state;
+try{state=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){state=null}
+if(!state)state={theme:"pink",gems:0,habits:[],checks:{},pet:null,weekStart:null,month:null};
+var colors=["#e98ca5","#9a82c1","#76a8bd","#e8ad70","#83b98d","#d38eae"];
+
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function $(id){return document.getElementById(id)}
+function modal(id,on){$(id).classList.toggle("open",on)}
+function fmt(d){return d.toISOString().slice(0,10)}
+function dateFrom(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x}
+function dayName(d){return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}
+function dates(){
+  var now=new Date();
+  if(view==="month"){var y=now.getFullYear(),m=now.getMonth();return Array.from({length:new Date(y,m+1,0).getDate()},(_,i)=>new Date(y,m,i+1))}
+  var day=now.getDay(),monday=addDays(now,day===0?-6:1-day);return Array.from({length:7},(_,i)=>addDays(monday,i))
+}
+var view="week";
+
+function applyTheme(){
+  var t=themes[state.theme]||themes.pink;
+  Object.keys(t).forEach(function(k){document.documentElement.style.setProperty("--"+k,t[k])});
+  document.body.className="";
+}
+function checkKey(h,d){return h+"|"+fmt(d)}
+function isDone(h,d){return !!state.checks[checkKey(h.id,d)]}
+function streak(h,ds,index){
+  var s=0;
+  for(var i=index;i>=0;i--){if(isDone(h,ds[i]))s++;else break}
+  return s;
+}
+function render(){
+  applyTheme();
+  $("gems").textContent=state.gems;
+if($("petGems"))$("petGems").textContent=state.gems;
+  var ds=dates();$("periodTitle").textContent=view==="week"?"This Week":"This Month";
+  $("periodSub").textContent=view==="week"?fmt(ds[0])+" – "+fmt(ds[6]):ds[0].toLocaleString("en",{month:"long",year:"numeric"});
+  $("weekBtn").classList.toggle("active",view==="week");$("monthBtn").classList.toggle("active",view==="month");$("monthControls").style.display=view==="month"?"block":"none";
+  var g=$("habitGrid");g.innerHTML="";g.style.gridTemplateColumns="190px repeat("+ds.length+",38px)";
+  var head=document.createElement("div");head.className="habitHead";head.textContent="Habit";g.appendChild(head);
+  ds.forEach(function(d){var x=document.createElement("div");x.className="dayHead";x.innerHTML=dayName(d)+"<br>"+d.getDate();g.appendChild(x)});
+  state.habits.forEach(function(h){
+    var hc=document.createElement("div");hc.className="habitHead habitCell";hc.innerHTML='<span class="dot" style="background:'+h.color+'"></span><span class="habitName">'+esc(h.name)+'</span>';g.appendChild(hc);
+    ds.forEach(function(d,i){var c=document.createElement("div");c.className="cell trackCell";var b=document.createElement("button");b.className="trackBtn"+(isDone(h,d)?" done":"");b.style.setProperty("--habitColor",h.color);b.textContent=isDone(h,d)?"✓":"";b.title="Toggle "+h.name+" for "+fmt(d);b.onclick=function(){toggle(h,d,ds,i)};c.appendChild(b);g.appendChild(c)})
+  });
+  var total=state.habits.length, doneToday=0, today=new Date();
+  state.habits.forEach(function(h){if(isDone(h,today))doneToday++});
+  var pct=total?Math.round(doneToday/total*100):0;$("progressPct").textContent=pct+"%";$("progressBar").style.width=pct+"%";$("ring").style.setProperty("--p",pct+"%");
+  $("progressText").textContent=total?(doneToday+"/"+total+" habits today"):"Add your first habit";
+  $("tip").textContent=total?"Every check earns 10 💎. Three in a row earns +50 💎.":"Build your routine and earn gems!";
+  renderPet();renderManage();
+}
+function toggle(h,d,ds,i){
+  var k=checkKey(h.id,d),was=!!state.checks[k];
+  if(was){delete state.checks[k]}
+  else{
+    state.checks[k]=true;state.gems+=10;
+    var s=streak(h,ds,i);
+    if(s>=3 && s%3===0){state.gems+=50;toast("✨ 3-day streak! +50 💎")}
+  }
+  save();render();
+}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]})}
+function toast(text){var t=document.createElement("div");t.textContent=text;t.style.cssText="position:fixed;right:20px;bottom:20px;background:var(--accent);color:white;padding:12px 16px;border-radius:12px;z-index:99999;box-shadow:0 8px 20px #0002";document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+function addHabit(){
+  var name=$("habitNameInput").value.trim();if(!name){$("habitNameInput").focus();return}
+  var color=document.querySelector(".colorPick.selected")?.dataset.color||colors[0];
+  state.habits.push({id:Date.now().toString(),name,color});$("habitNameInput").value="";modal("habitModal",false);save();render()
+}
+function renderManage(){
+  var box=$("manageList");if(!box)return;box.innerHTML="";
+  if(!state.habits.length){box.innerHTML='<p class="sub">No habits yet.</p>';return}
+  state.habits.forEach(function(h){
+    var row=document.createElement("div");row.style.cssText="display:flex;justify-content:space-between;align-items:center;padding:9px;border-bottom:1px solid var(--line);gap:8px";
+    row.innerHTML='<span><span class="dot" style="display:inline-block;background:'+h.color+'"></span> '+esc(h.name)+'</span>';
+    var del=document.createElement("button");del.className="smallBtn";del.textContent="Delete";del.type="button";
+    del.onclick=function(e){e.preventDefault();e.stopPropagation();customDelete(h.id)};row.appendChild(del);box.appendChild(row)
+  })
+}
+var pendingDeleteId=null;
+function customDelete(id){
+  var h=state.habits.find(function(x){return x.id===id;});
+  if(!h)return;
+  pendingDeleteId=id;
+  $("deleteHabitName").textContent=h.name;
+  modal("deleteModal",true);
+}
+function confirmDelete(){
+  if(!pendingDeleteId)return;
+  var id=pendingDeleteId;
+  state.habits=state.habits.filter(function(h){return h.id!==id;});
+  Object.keys(state.checks).forEach(function(k){
+    if(k.indexOf(id+"|")===0)delete state.checks[k];
+  });
+  pendingDeleteId=null;
+  save();
+  modal("deleteModal",false);
+  render();
+  toast("Habit deleted");
+}
+function renderPet(){
+  if(state.pet && !state.pet.body && petInfo[state.pet.type]) state.pet.body=petInfo[state.pet.type].body;
+  var p=state.pet;if(!p){$("petDisplay").innerHTML="<span class=\"petPlaceholder\">🐾</span>";$("petName").textContent="Your Buddy";$("petHeaderName").textContent="Meet your pet";$("petMood").textContent="Choose your first little friend";$("choosePet").style.display="block";$("petStats").style.display="none";$("petActions").style.display="none";$("changePet").style.display="none";return}
+  $("petDisplay").innerHTML=p.body;$("petName").textContent=p.name;$("petHeaderName").textContent=p.name;$("petMood").textContent=p.mood;$("choosePet").style.display="none";$("petStats").style.display="grid";$("petActions").style.display="grid";$("changePet").style.display="block";
+  [["happy",p.happiness],["hunger",p.hunger],["energy",p.energy],["clean",p.cleanliness]].forEach(x=>{$(x[0]).textContent=x[1];$(x[0]+"Bar").style.width=x[1]+"%"})
+}
+var petInfo={
+dog:{body:`<svg class="petSvg dogSvg" viewBox="0 0 180 180" aria-label="cute full body dog">
+<defs><radialGradient id="dg" cx="35%" cy="25%"><stop stop-color="#ffd99a"/><stop offset="1" stop-color="#c98545"/></radialGradient></defs>
+<ellipse cx="90" cy="158" rx="48" ry="10" fill="#0002"/>
+<path class="tail" d="M137 112 C170 105 169 65 145 70" fill="none" stroke="#c98545" stroke-width="16" stroke-linecap="round"/>
+<ellipse cx="90" cy="110" rx="43" ry="42" fill="url(#dg)"/>
+<ellipse cx="90" cy="65" rx="48" ry="43" fill="url(#dg)"/>
+<path d="M55 39 Q29 22 39 75 Q53 88 66 61Z" fill="#9b633c"/><path d="M125 39 Q151 22 141 75 Q127 88 114 61Z" fill="#9b633c"/>
+<ellipse cx="72" cy="62" rx="10" ry="13" fill="#fff"/><ellipse cx="108" cy="62" rx="10" ry="13" fill="#fff"/><circle cx="73" cy="64" r="6" fill="#3d3a45"/><circle cx="107" cy="64" r="6" fill="#3d3a45"/>
+<ellipse cx="90" cy="80" rx="9" ry="7" fill="#5d382d"/><path d="M90 87 Q78 100 90 103 Q102 100 90 87" fill="#ed7892"/>
+<ellipse cx="66" cy="134" rx="12" ry="22" fill="#c98545"/><ellipse cx="114" cy="134" rx="12" ry="22" fill="#c98545"/>
+<ellipse cx="64" cy="154" rx="15" ry="7" fill="#e8c18d"/><ellipse cx="116" cy="154" rx="15" ry="7" fill="#e8c18d"/>
+<path d="M66 105 Q90 118 114 105" fill="none" stroke="#e97e98" stroke-width="10"/>
+</svg>`,name:"Buddy",mood:"Your loyal little friend"},
+cat:{body:`<svg class="petSvg catSvg" viewBox="0 0 180 180" aria-label="cute full body cat">
+<defs><radialGradient id="cg" cx="35%" cy="20%"><stop stop-color="#ffd99b"/><stop offset="1" stop-color="#e39a48"/></radialGradient></defs>
+<ellipse cx="90" cy="158" rx="46" ry="9" fill="#0002"/>
+<path class="tail" d="M130 117 C170 130 164 75 139 88" fill="none" stroke="#df9344" stroke-width="13" stroke-linecap="round"/>
+<ellipse cx="90" cy="112" rx="39" ry="43" fill="url(#cg)"/>
+<path d="M54 58 L58 25 L82 48 Q90 44 98 48 L122 25 L126 58Z" fill="url(#cg)"/>
+<ellipse cx="72" cy="66" rx="10" ry="13" fill="#fff"/><ellipse cx="108" cy="66" rx="10" ry="13" fill="#fff"/><circle cx="73" cy="67" r="6" fill="#354c42"/><circle cx="107" cy="67" r="6" fill="#354c42"/>
+<path d="M90 81 q-8 0-8 6 q8 7 16 0 q0-6-8-6" fill="#ed7892"/>
+<path d="M53 83 H26 M53 91 H24 M127 83 H154 M127 91 H156" stroke="#9d6c4a" stroke-width="2"/>
+<ellipse cx="69" cy="136" rx="10" ry="21" fill="#e39a48"/><ellipse cx="111" cy="136" rx="10" ry="21" fill="#e39a48"/>
+<ellipse cx="67" cy="154" rx="13" ry="6" fill="#f0c58e"/><ellipse cx="113" cy="154" rx="13" ry="6" fill="#f0c58e"/>
+</svg>`,name:"Mochi",mood:"Your curious little friend"},
+bunny:{body:`<svg class="petSvg bunnySvg" viewBox="0 0 180 180" aria-label="cute full body bunny">
+<defs><radialGradient id="bg" cx="35%" cy="20%"><stop stop-color="#fff" /><stop offset="1" stop-color="#d8c6ed"/></radialGradient></defs>
+<ellipse cx="90" cy="158" rx="44" ry="9" fill="#0002"/>
+<ellipse cx="90" cy="115" rx="39" ry="41" fill="url(#bg)"/>
+<ellipse cx="70" cy="40" rx="14" ry="38" fill="#e4d4f1"/><ellipse cx="110" cy="40" rx="14" ry="38" fill="#e4d4f1"/>
+<ellipse cx="70" cy="40" rx="6" ry="27" fill="#f0a9bb"/><ellipse cx="110" cy="40" rx="6" ry="27" fill="#f0a9bb"/>
+<circle cx="90" cy="68" r="45" fill="url(#bg)"/>
+<ellipse cx="73" cy="69" rx="9" ry="12" fill="#fff"/><ellipse cx="107" cy="69" rx="9" ry="12" fill="#fff"/><circle cx="73" cy="70" r="5" fill="#44384f"/><circle cx="107" cy="70" r="5" fill="#44384f"/>
+<ellipse cx="90" cy="84" rx="7" ry="5" fill="#d88da8"/><path d="M90 88 q-9 9-16 2 M90 88 q9 9 16 2" fill="none" stroke="#9c7185" stroke-width="2"/>
+<ellipse cx="68" cy="136" rx="11" ry="20" fill="#d8c6ed"/><ellipse cx="112" cy="136" rx="11" ry="20" fill="#d8c6ed"/>
+<circle cx="134" cy="126" r="12" fill="#fff"/>
+</svg>`,name:"Clover",mood:"Your gentle little friend"},
+hamster:{body:`<svg class="petSvg hamsterSvg" viewBox="0 0 180 180" aria-label="cute full body hamster">
+<defs><radialGradient id="hg" cx="35%" cy="20%"><stop stop-color="#ffe0a6"/><stop offset="1" stop-color="#d89555"/></radialGradient></defs>
+<ellipse cx="90" cy="158" rx="47" ry="9" fill="#0002"/>
+<ellipse cx="90" cy="108" rx="48" ry="47" fill="url(#hg)"/>
+<circle cx="53" cy="72" r="20" fill="#d89555"/><circle cx="127" cy="72" r="20" fill="#d89555"/>
+<circle cx="53" cy="72" r="11" fill="#f5c3ca"/><circle cx="127" cy="72" r="11" fill="#f5c3ca"/>
+<circle cx="72" cy="82" r="9" fill="#fff"/><circle cx="108" cy="82" r="9" fill="#fff"/><circle cx="73" cy="83" r="5" fill="#3f3940"/><circle cx="107" cy="83" r="5" fill="#3f3940"/>
+<ellipse cx="90" cy="98" rx="8" ry="6" fill="#7b4d3c"/><path d="M90 104 q-8 7-15 0 M90 104 q8 7 15 0" fill="none" stroke="#7b4d3c" stroke-width="2"/>
+<ellipse cx="68" cy="137" rx="12" ry="18" fill="#d89555"/><ellipse cx="112" cy="137" rx="12" ry="18" fill="#d89555"/>
+<ellipse cx="66" cy="153" rx="15" ry="7" fill="#f1c991"/><ellipse cx="114" cy="153" rx="15" ry="7" fill="#f1c991"/>
+</svg>`,name:"Peanut",mood:"Your tiny little friend"}
+};
+if(state.pet && !state.pet.body){
+  state.pet.body=petInfo.dog.body;
+}
+document.querySelectorAll(".choice").forEach(function(b){b.onclick=function(){
+var p=petInfo[b.dataset.pet];
+var customName=$("petNameInput").value.trim();
+var chosenName=customName||p.name;
+state.pet={type:b.dataset.pet,body:p.body,name:chosenName,mood:p.mood,happiness:100,hunger:100,energy:100,cleanliness:100};
+$("petNameInput").value="";
+save();modal("petModal",false);render();toast(chosenName+" is now your buddy! 🐾")
+}});
+document.querySelectorAll(".actions button").forEach(function(b){b.onclick=function(){if(!state.pet)return;var p=state.pet,a=b.dataset.act,el=$("petDisplay");el.classList.remove("happy","eat","walk");if(a==="pet"){p.happiness=Math.min(100,p.happiness+8);el.classList.add("happy");p.cleanliness=Math.min(100,p.cleanliness+1)}if(a==="feed"){p.hunger=Math.min(100,p.hunger+15);p.happiness=Math.min(100,p.happiness+2);el.classList.add("eat");p.cleanliness=Math.max(0,p.cleanliness-1)}if(a==="play"){p.happiness=Math.min(100,p.happiness+12);p.energy=Math.max(0,p.energy-8);el.classList.add("happy");p.cleanliness=Math.max(0,p.cleanliness-2)}if(a==="walk"){p.happiness=Math.min(100,p.happiness+15);p.energy=Math.max(0,p.energy-12);el.classList.add("walk");p.cleanliness=Math.max(0,p.cleanliness-2)}save();renderPet()}})
+$("confirmDelete").onclick=confirmDelete;
+$("cancelDelete").onclick=function(){pendingDeleteId=null;modal("deleteModal",false)};
+$("choosePet").onclick=()=>modal("petModal",true);$("changePet").onclick=()=>modal("petModal",true);$("addHabit").onclick=()=>modal("habitModal",true);$("manageHabits").onclick=()=>{renderManage();modal("manageModal",true)};$("clearPaint").onclick=()=>{var today=fmt(new Date());Object.keys(state.checks).forEach(k=>{if(k.endsWith("|"+today))delete state.checks[k]});save();render()};$("weekBtn").onclick=()=>{view="week";render()};$("monthBtn").onclick=()=>{view="month";render()};$("saveHabit").onclick=addHabit;
+document.querySelectorAll(".close").forEach(b=>b.onclick=function(){
+  if(b.dataset.close==="deleteModal")pendingDeleteId=null;
+  modal(b.dataset.close,false);
+});document.querySelectorAll(".modal").forEach(m=>m.onclick=e=>{if(e.target===m)m.classList.remove("open")});
+document.querySelectorAll(".themeBtn").forEach(b=>b.onclick=()=>{state.theme=b.dataset.theme;save();applyTheme();modal("settingsModal",false);toast("Theme changed ✨")});
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{var tab=b.dataset.tab;document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(tab==="settings")modal("settingsModal",true);else if(tab==="pet")$("petPanel").scrollIntoView({behavior:"smooth"});else if(tab==="tracker")$("trackerPanel").scrollIntoView({behavior:"smooth"});else if(tab==="shop"){renderShop();renderTreatBag();modal("shopModal",true)}else{$("infoTitle").textContent="Your Stats";$("infoText").textContent="Your detailed streaks and progress will live here next.";modal("infoModal",true)}});
+document.querySelectorAll(".colorPick").forEach(b=>b.onclick=()=>{document.querySelectorAll(".colorPick").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
+document.querySelectorAll(".colorPick").forEach(b=>{});
+var colorBox=$("habitColors");colors.forEach(function(c,i){var b=document.createElement("button");b.type="button";b.className="colorPick"+(i===0?" selected":"");b.dataset.color=c;b.style.background=c;colorBox.appendChild(b);b.onclick=function(){document.querySelectorAll(".colorPick").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}});
+
+var checkoutButton=$("checkoutTreats");
+if(checkoutButton){
+  checkoutButton.type="button";
+  checkoutButton.onclick=function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    checkoutTreats();
+  };
+}
+applyTheme();render();
+})();
+</script>
+
+<script>
+(function(){
+  function runCheckout(){
+    var btn=document.getElementById("checkoutTreats");
+    if(!btn) return;
+    if(typeof window.checkoutTreats === "function"){
+      window.checkoutTreats();
+      return;
+    }
+    // Fallback: perform the checkout directly using the app's saved state.
+    try{
+      var raw=localStorage.getItem("habitBuddyFinalV2");
+      var state=raw?JSON.parse(raw):null;
+      if(!state){ alert("Habit Buddy state could not be loaded."); return; }
+      state.cart=state.cart||{};
+      state.treats=state.treats||{};
+      var catalogs={
+        dog:[["dog_treat",50],["dog_biscuit",100]],
+        cat:[["cat_treat",50],["cat_snack",100]],
+        bunny:[["bunny_treat",50],["bunny_snack",100]],
+        hamster:[["hamster_treat",50],["hamster_snack",100]]
+      };
+      var type=state.pet&&state.pet.type;
+      var list=catalogs[type]||[];
+      var total=0, count=0;
+      list.forEach(function(x){
+        var q=Number(state.cart[x[0]]||0);
+        total+=q*x[1]; count+=q;
+      });
+      if(!count){ alert("Your cart is empty 🛒"); return; }
+      if(total>Number(state.gems||0)){ alert("Not enough gems 💎"); return; }
+      list.forEach(function(x){
+        var q=Number(state.cart[x[0]]||0);
+        if(q){
+          state.treats[x[0]]=(Number(state.treats[x[0]])||0)+q;
+          state.cart[x[0]]=0;
+        }
+      });
+      state.gems=Number(state.gems||0)-total;
+      localStorage.setItem("habitBuddyFinalV2",JSON.stringify(state));
+      window.location.reload();
+    }catch(err){
+      console.error(err);
+      alert("Checkout error: "+err.message);
+    }
+  }
+  function bind(){
+    var b=document.getElementById("checkoutTreats");
+    if(!b){setTimeout(bind,100);return;}
+    b.type="button";
+    b.removeAttribute("disabled");
+    b.style.pointerEvents="auto";
+    b.style.cursor="pointer";
+    b.addEventListener("click",function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      runCheckout();
+    },true);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind);
+  else bind();
+})();
+</script>
+
+<script>
+window.habitBuddyCheckout=function(){
+  try{
+    var KEY="habitBuddyFinalV2";
+    var raw=localStorage.getItem(KEY);
+    var state=raw?JSON.parse(raw):null;
+    if(!state){alert("Habit Buddy data could not be loaded.");return;}
+    state.cart=state.cart||{};
+    state.treats=state.treats||{};
+
+    var catalogs={
+      dog:[
+        {id:"dog_treat",name:"Puppy Treats",emoji:"🦴",price:50},
+        {id:"dog_biscuit",name:"Premium Puppy Treat",emoji:"🍪",price:100}
+      ],
+      cat:[
+        {id:"cat_treat",name:"Fish Treats",emoji:"🐟",price:50},
+        {id:"cat_snack",name:"Tuna Treats",emoji:"🍣",price:100}
+      ],
+      bunny:[
+        {id:"bunny_treat",name:"Carrot Treats",emoji:"🥕",price:50},
+        {id:"bunny_snack",name:"Apple Treats",emoji:"🍎",price:100}
+      ],
+      hamster:[
+        {id:"hamster_treat",name:"Seed Treats",emoji:"🌻",price:50},
+        {id:"hamster_snack",name:"Nut Treats",emoji:"🥜",price:100}
+      ]
+    };
+
+    var type=state.pet&&state.pet.type;
+    var products=catalogs[type]||[];
+    var order=[];
+    var total=0;
+    var count=0;
+
+    products.forEach(function(item){
+      var qty=Number(state.cart[item.id]||0);
+      if(qty>0){
+        order.push({name:item.name,emoji:item.emoji,qty:qty,subtotal:qty*item.price,id:item.id});
+        total+=qty*item.price;
+        count+=qty;
+      }
+    });
+
+    if(!count){
+      alert("Your cart is empty 🛒");
+      return;
+    }
+
+    var before=Number(state.gems||0);
+    if(total>before){
+      alert("You don't have enough 💎 for this order.");
+      return;
+    }
+
+    // Transfer the exact purchased quantities into the Treat Bag.
+    order.forEach(function(item){
+      state.treats[item.id]=Number(state.treats[item.id]||0)+item.qty;
+      state.cart[item.id]=0;
+    });
+
+    state.gems=before-total;
+    localStorage.setItem(KEY,JSON.stringify(state));
+
+    // Build the confirmation panel immediately — no reload required.
+    var summary=document.getElementById("orderSummary");
+    if(summary){
+      summary.innerHTML=
+        '<div class="orderList">'+
+        order.map(function(item){
+          return '<div class="orderLine"><span>'+item.emoji+' '+item.name+' ×'+item.qty+
+                 '</span><b>💎 '+item.subtotal+'</b></div>';
+        }).join("")+
+        '</div>'+
+        '<div class="orderMoney"><span>Gems before</span><b>💎 '+before+'</b></div>'+
+        '<div class="orderMoney spent"><span>Gems spent</span><b>−💎 '+total+'</b></div>'+
+        '<div class="orderMoney remaining"><span>Gems remaining</span><b>💎 '+state.gems+'</b></div>';
+    }
+
+    var shop=document.getElementById("shopModal");
+    var confirm=document.getElementById("orderConfirm");
+    if(shop)shop.classList.remove("open");
+    if(confirm)confirm.classList.add("open");
+
+    // Update visible balance/cart if those elements exist.
+    var gems=document.getElementById("shopGems");
+    if(gems)gems.textContent=state.gems;
+    var cartCount=document.getElementById("cartCount");
+    if(cartCount)cartCount.textContent="0";
+    var cartTotal=document.getElementById("cartTotal");
+    if(cartTotal)cartTotal.textContent="0";
+    var rows=document.getElementById("cartRows");
+    if(rows)rows.innerHTML='<div class="cartEmpty">Your cart is empty 🛒</div>';
+
+  }catch(error){
+    console.error(error);
+    alert("Checkout could not be completed: "+error.message);
+  }
+};
+</script>
+</body></html>
